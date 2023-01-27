@@ -134,35 +134,58 @@ app.get('/callback', (req, res) => {
         // But we're not done yet, if we take another look at the data returned by Spotify's /api/token endpoint, we'll see that in addition to the access_token, there are also a token_type, scope, expires_in, and refresh_token value.
         // The expires_in value is the number of seconds that the access_token is valid. This means after 3600 seconds, or 60 minutes, our access_token will expire.
         // Once the token is expired, there are two things that could happen: 1) we force the user to log in again, or 2) we use the refresh_token to retrieve another access token behind the scenes, not requiring the user log in again. The better user experience is definitely the latter, so let's make sure our app has a way to handle that by setting up the  a route handler to handle requesting a new access token with our refresh token (Step 4).
+        // if (response.status === 200) {
+
+        //     const { access_token, token_type } = response.data;
+      
+        //     // axios.get('https://api.spotify.com/v1/me', {
+        //     //   headers: {
+        //     //     Authorization: `${token_type} ${access_token}`
+        //     //   }
+        //     // })
+        //     //   .then(response => {
+        //     //     res.send(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+        //     //   })
+        //     //   .catch(error => {
+        //     //     res.send(error);
+        //     //   });
+
+        //     /* To test the route handler, we'll have to go through the login flow again. For testing purposes, let's replace the GET request we made to the https://api.spotify.com/v1/me endpoint in the /callback route handler with a GET request to our local /refresh_token endpoint (http://localhost:8888/refresh_token).*/
+        //     const { refresh_token } = response.data;
+
+        //     axios.get(`http://localhost:8888/refresh_token?refresh_token=${refresh_token}`)
+        //       .then(response => {
+        //         res.send(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+        //       })
+        //       .catch(error => {
+        //         res.send(error);
+        //       });
+      
+        // } else {
+        //     res.send(response);
+        // }
+
+        // Step 5: What we really want our /callback route handler to do, once our app has been authorized and the user has successfully logged in to Spotify, is to redirect the user to our React app with the access and refresh tokens we received from the Spotify Accounts Service.
+        // We can pass the tokens along to our React app with query params, so we will update our route handler to do that and comment out the previous code above
+        // Here, once the user successfully logged in to Spotify, we use the res.redirect() Express method to redirect the user to http://localhost:3000 (our React app), and querystring.stringify() the tokens.
+        // Now, when we hit the Log in to Spotify link, the URL will be updated to include the access_token and refresh_token query params
+        // Oce we're done with this step, when the user logs in with our link, if we look at the url in the address bar, we'll see that it's not just plain 'http://localhost:3000' anymore, there are also access token and refresh token query params on that url.
+        // Now that we have those 2 tokens in the URL, we can store them in our React app using useEffect hook -> Step 5 (App.js)
         if (response.status === 200) {
-
-            const { access_token, token_type } = response.data;
-      
-            // axios.get('https://api.spotify.com/v1/me', {
-            //   headers: {
-            //     Authorization: `${token_type} ${access_token}`
-            //   }
-            // })
-            //   .then(response => {
-            //     res.send(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`);
-            //   })
-            //   .catch(error => {
-            //     res.send(error);
-            //   });
-
-            /* To test the route handler, we'll have to go through the login flow again. For testing purposes, let's replace the GET request we made to the https://api.spotify.com/v1/me endpoint in the /callback route handler with a GET request to our local /refresh_token endpoint (http://localhost:8888/refresh_token).*/
-            const { refresh_token } = response.data;
-
-            axios.get(`http://localhost:8888/refresh_token?refresh_token=${refresh_token}`)
-              .then(response => {
-                res.send(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`);
-              })
-              .catch(error => {
-                res.send(error);
-              });
-      
-        } else {
-            res.send(response);
+          const { access_token, refresh_token } = response.data;
+  
+          const queryParams = querystring.stringify({
+            access_token,
+            refresh_token,
+          });
+          
+          // redirect to react app at http://localhost:3000
+          res.redirect(`http://localhost:3000/?${queryParams}`);
+          
+        } 
+        // if the respose is not 200, we will redirect with a error query param instead
+        else {
+          res.redirect(`/?${querystring.stringify({ error: 'invalid_token' })}`);
         }
       }) // On the other hand, if our request fails, the error will be caught in the .catch() callback, in which case we just return the error message.
       .catch(error => {
