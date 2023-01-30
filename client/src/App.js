@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import { accessToken } from './spotify';
+import { accessToken, logout } from './spotify';
 import logo from './logo.svg';
 import './App.css';
 
@@ -39,6 +39,8 @@ function App() {
     setToken(accessToken);
   }, []);
 
+  // Now, we're gonna add a logout button! We'll import the logout function from our spotify.js file and then add a <button> with a click handler that calls the logout function.
+  // When we click the logout button, the page will reload and the Log in to Spotify link will be rendered, since there's no longer an access token in local storage
   return (
     <div className="App">
       <header className="App-header">
@@ -47,7 +49,10 @@ function App() {
             Log in to Spotify
           </a>
         ) : (
-          <h1>Logged in!</h1>
+          <>
+            <h1>Logged in!</h1>
+            <button onClick={logout}>Log Out</button>
+          </>
         )}
       </header>
     </div>
