@@ -1,9 +1,13 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import { accessToken } from './spotify';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+
+  const [token, setToken] = useState(null);
+
+
 
   // Step 5: add a simple useEffect hook that stores the values of the access_token and refresh_token into variables
 
@@ -33,22 +37,20 @@ function App() {
   //       .then(data => console.log(data))
   //       .catch(err => console.error(err));
   //   }
+
+  setToken(accessToken);
   }, []);
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          // replace the Learn React link with a Log in to Spotify link that hits the /login route we set up in our Express app
-          href="http://localhost:8888/login"
-        > 
-          Log into Spotify
-        </a>
+        {!token ? (
+          <a className="App-link" href="http://localhost:8888/login">
+            Log in to Spotify
+          </a>
+        ) : (
+          <h1>Logged in!</h1>
+        )}
       </header>
     </div>
   );
