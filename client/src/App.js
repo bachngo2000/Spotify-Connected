@@ -1,11 +1,14 @@
 import {useEffect, useState} from 'react';
-import { accessToken, logout } from './spotify';
+import { accessToken, logout, getCurrentUserProfile } from './spotify';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
 
   const [token, setToken] = useState(null);
+
+  // Step 13: after importing the getCurrentUserProfile() function from our spotify.js file, we add another useState hook to keep track of the data it returns
+  const [profile, setProfile] = useState(null);
 
   // Step 5: add a simple useEffect hook that stores the values of the access_token and refresh_token into variables
 
@@ -37,6 +40,25 @@ function App() {
   //   }
 
     setToken(accessToken);
+
+    // Step 14: Since getCurrentUserProfile() returns a promise, we need to wait for the promise to be resolved using await. 
+    // Since the await operator can only be used inside async functions, we handle this by creating an async function called fetchData() within our useEffect hook and invoking it
+    // In fetchData(), all we need to do is await the response of getCurrentUserProfile(), and use setProfile to set the state variable. We're using destructuring to access the data property of the axios response.
+    const fetchData = async () => {
+      // await the getCurrentUserProfile() function
+      try {
+        // Since we're using axios, the json data that is returned from the Spotify API endpoint is a property called 'data' on the response object, we could just destructure it here
+        const { data } = await getCurrentUserProfile();
+        setProfile(data);
+
+        console.log(data);
+        
+      } catch(e) {
+        console.error(e);
+      }
+    };
+
+    fetchData();
   }, []);
 
   // Now, we're gonna add a logout button! We'll import the logout function from our spotify.js file and then add a <button> with a click handler that calls the logout function.
