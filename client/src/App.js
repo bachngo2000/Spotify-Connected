@@ -6,7 +6,21 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  useLocation,
 } from 'react-router-dom';
+
+// Scroll to top of page when changing routes
+// https://reactrouter.com/web/guides/scroll-restoration/scroll-to-top
+// Create the <ScrollToTop> React component above our App function.
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
 
@@ -85,6 +99,7 @@ function App() {
   // Each route (page) is wrapped in a <Route> component, and we declare the path we want that route to use with the path prop. Something important to note here is the order of the routes.
   // According to the React Router documentation, when a <Routes> is rendered, it searches through its children <Route> elements to find one whose path matches the current URL. When it finds one, it renders that <Route> and ignores all others. This means that you should put <Route>s with more specific (typically longer) paths before less-specific ones.
   // So in our case, we need to declare the /playlists/:id route before the /playlists route. If we don't, navigating to a URL like /playlists/abc123 will render the /playlists route since it's technically a match.
+  //  add the <ScrollToTop> component inside our <Router> but above our <Routes>.
   return (
     <div className="App">
       <header className="App-header">
@@ -107,6 +122,7 @@ function App() {
           //   )}
           // </>
           <Router>
+            <ScrollToTop />
             <Routes>
               <Route path="/top-artists" element={<h1>Top Artists</h1>}>
               </Route>
