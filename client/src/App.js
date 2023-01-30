@@ -52,7 +52,7 @@ function App() {
         setProfile(data);
 
         console.log(data);
-        
+
       } catch(e) {
         console.error(e);
       }
@@ -63,6 +63,8 @@ function App() {
 
   // Now, we're gonna add a logout button! We'll import the logout function from our spotify.js file and then add a <button> with a click handler that calls the logout function.
   // When we click the logout button, the page will reload and the 'Log in to Spotify' link will be rendered, since there's no longer an access token in local storage (it's been cleared)
+  // Step 15: Now that we've stored the API response in the 'profile' state variable, we can use that to add some JSX to display the data!
+  // So once the 'profile; state variable is not null, we will render what's in the <div>..</div> section
   return (
     <div className="App">
       <header className="App-header">
@@ -74,6 +76,15 @@ function App() {
           <>
             <h1>Logged in!</h1>
             <button onClick={logout}>Log Out</button>
+            {profile && (
+              <div>
+                <h1>{profile.display_name}</h1>
+                <p>{profile.followers.total} Followers</p>
+                {profile.images.length && profile.images[0].url && (
+                  <img src={profile.images[0].url} alt="Avatar"/>
+                )}
+              </div>
+            )}
           </>
         )}
       </header>
