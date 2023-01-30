@@ -6,7 +6,7 @@ const LOCALSTORAGE_KEYS = {
     refreshToken: 'spotify_refresh_token',
     expireTime: 'spotify_token_expire_time',
     timestamp: 'spotify_token_timestamp',
-  }
+}
   
 // Map to retrieve localStorage values
 // LOCALSTORAGE_VALUES map is an easy way for us to refer to the values currently set in local storage.  Step 8 ends here!
@@ -15,6 +15,22 @@ const LOCALSTORAGE_VALUES = {
     refreshToken: window.localStorage.getItem(LOCALSTORAGE_KEYS.refreshToken),
     expireTime: window.localStorage.getItem(LOCALSTORAGE_KEYS.expireTime),
     timestamp: window.localStorage.getItem(LOCALSTORAGE_KEYS.timestamp),
+};
+
+// Step 11: The last new function we have is a logout() function
+/**
+ * Clear out all localStorage items we've set and reload the page
+ * @returns {void}
+ */
+
+// All this function does is loop through all the local storage items we've set and remove them. Then, it reloads the page to make sure our UI is updated (and goes back to the state with the login button).
+export const logout = () => {
+    // Clear all localStorage items
+    for (const property in LOCALSTORAGE_KEYS) {
+      window.localStorage.removeItem(LOCALSTORAGE_KEYS[property]);
+    }
+    // Navigate to homepage
+    window.location = window.location.origin;
 };
 
 //Step 10: Checking if the access token has expired
