@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { accessToken, logout, getCurrentUserProfile } from './spotify';
-import logo from './logo.svg';
+import { catchErrors } from './util';
 import './App.css';
 
 function App() {
@@ -44,21 +44,30 @@ function App() {
     // Step 14: Since getCurrentUserProfile() returns a promise, we need to wait for the promise to be resolved using await. 
     // Since the await operator can only be used inside async functions, we handle this by creating an async function called fetchData() within our useEffect hook and invoking it
     // In fetchData(), all we need to do is await the response of getCurrentUserProfile(), and use setProfile to set the state variable. We're using destructuring to access the data property of the axios response.
+    // Step 16: Using higher order function
+    // We've been wrapping our async/await code in try/catch blocks to make sure we handle our errors gracefully. We could improve this code a bit with a higher-order function.
+    // In our case, our higher-order function 'catchErrors' in util.js will take our async function, fetchData(), as an argument, and wrap our asynchronous code in a try/catch for us.
+    // So, in our App.js file, we will import the catchErrors() function and wrap it around our invocation of fetchData() (our async function). Once we do that, we can safely remove the try/catch block.
     const fetchData = async () => {
       // await the getCurrentUserProfile() function
-      try {
-        // Since we're using axios, the json data that is returned from the Spotify API endpoint is a property called 'data' on the response object, we could just destructure it here
-        const { data } = await getCurrentUserProfile();
-        setProfile(data);
+      // try {
+      //   // Since we're using axios, the json data that is returned from the Spotify API endpoint is a property called 'data' on the response object, we could just destructure it here
+      //   const { data } = await getCurrentUserProfile();
+      //   setProfile(data);
 
-        console.log(data);
+      //   console.log(data);
 
-      } catch(e) {
-        console.error(e);
-      }
+      // } catch(e) {
+      //   console.error(e);
+      // }
+
+      const { data } = await getCurrentUserProfile();
+      setProfile(data);
+
     };
 
-    fetchData();
+    catchErrors(fetchData());
+
   }, []);
 
   // Now, we're gonna add a logout button! We'll import the logout function from our spotify.js file and then add a <button> with a click handler that calls the logout function.
