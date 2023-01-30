@@ -109,6 +109,8 @@ const getAccessToken = () => {
         [LOCALSTORAGE_KEYS.expireTime]: urlParams.get('expires_in'),
     };
 
+    const hasError = urlParams.get('error');
+    
     // If there's an error in the query param of our URL OR the token in localStorage has expired, refresh the token
     if (hasError || hasTokenExpired() || LOCALSTORAGE_VALUES.accessToken === 'undefined') {
         refreshToken();
