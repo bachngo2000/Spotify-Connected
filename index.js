@@ -171,12 +171,14 @@ app.get('/callback', (req, res) => {
         // Now, when we hit the Log in to Spotify link, the URL will be updated to include the access_token and refresh_token query params
         // Oce we're done with this step, when the user logs in with our link, if we look at the url in the address bar, we'll see that it's not just plain 'http://localhost:3000' anymore, there are also access token and refresh token query params on that url.
         // Now that we have those 2 tokens in the URL, we can store them in our React app using useEffect hook -> Step 5 (App.js)
-        if (response.status === 200) {
-          const { access_token, refresh_token } = response.data;
+        // Step 8: update the /callback route handler in our Express app to also include the expires_in value in the query params of the redirect URL so we work with it in our React app.
+      if (response.status === 200) {
+          const { access_token, refresh_token, expires_in  } = response.data;
   
           const queryParams = querystring.stringify({
             access_token,
             refresh_token,
+            expires_in
           });
           
           // redirect to react app at http://localhost:3000

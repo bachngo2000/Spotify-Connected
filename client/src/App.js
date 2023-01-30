@@ -7,8 +7,6 @@ function App() {
 
   const [token, setToken] = useState(null);
 
-
-
   // Step 5: add a simple useEffect hook that stores the values of the access_token and refresh_token into variables
 
   // We also use the built-in URLSearchParams web API to expose convenient utility methods (i.e. .get()) to work with the query strings.
@@ -38,7 +36,7 @@ function App() {
   //       .catch(err => console.error(err));
   //   }
 
-  setToken(accessToken);
+    setToken(accessToken);
   }, []);
 
   return (
