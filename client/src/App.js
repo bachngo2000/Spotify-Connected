@@ -2,6 +2,11 @@ import {useEffect, useState} from 'react';
 import { accessToken, logout, getCurrentUserProfile } from './spotify';
 import { catchErrors } from './util';
 import './App.css';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from 'react-router-dom';
 
 function App() {
 
@@ -74,6 +79,12 @@ function App() {
   // When we click the logout button, the page will reload and the 'Log in to Spotify' link will be rendered, since there's no longer an access token in local storage (it's been cleared)
   // Step 15: Now that we've stored the API response in the 'profile' state variable, we can use that to add some JSX to display the data!
   // So once the 'profile; state variable is not null, we will render what's in the <div>..</div> section
+  // Step 16: Setting React Router
+  // We'll use React Router to set up routing for these pages: Profile page (/), Top Artists page (/top-artists), Top Tracks page (/top-tracks), Playlists page (/playlists), Playlist details page (/playlists/:id)
+  // After importing react-router-dom, we'll set up our routes and replace the else block of our ternary to use the <Router> component.
+  // Each route (page) is wrapped in a <Route> component, and we declare the path we want that route to use with the path prop. Something important to note here is the order of the routes.
+  // According to the React Router documentation, when a <Routes> is rendered, it searches through its children <Route> elements to find one whose path matches the current URL. When it finds one, it renders that <Route> and ignores all others. This means that you should put <Route>s with more specific (typically longer) paths before less-specific ones.
+  // So in our case, we need to declare the /playlists/:id route before the /playlists route. If we don't, navigating to a URL like /playlists/abc123 will render the /playlists route since it's technically a match.
   return (
     <div className="App">
       <header className="App-header">
@@ -82,19 +93,45 @@ function App() {
             Log in to Spotify
           </a>
         ) : (
-          <>
-            <h1>Logged in!</h1>
-            <button onClick={logout}>Log Out</button>
-            {profile && (
-              <div>
-                <h1>{profile.display_name}</h1>
-                <p>{profile.followers.total} Followers</p>
-                {profile.images.length && profile.images[0].url && (
-                  <img src={profile.images[0].url} alt="Avatar"/>
-                )}
-              </div>
-            )}
-          </>
+          // <>
+          //   <h1>Logged in!</h1>
+          //   <button onClick={logout}>Log Out</button>
+          //   {profile && (
+          //     <div>
+          //       <h1>{profile.display_name}</h1>
+          //       <p>{profile.followers.total} Followers</p>
+          //       {profile.images.length && profile.images[0].url && (
+          //         <img src={profile.images[0].url} alt="Avatar"/>
+          //       )}
+          //     </div>
+          //   )}
+          // </>
+          <Router>
+            <Routes>
+              <Route path="/top-artists" element={<h1>Top Artists</h1>}>
+              </Route>
+              <Route path="/top-tracks" element={<h1>Top Tracks</h1>}>
+              </Route>
+              <Route path="/playlists/:id" element={<h1>Playlist</h1>}>
+              </Route>
+              <Route path="/playlists" element={<h1>Playlists</h1>}>
+              </Route>
+              <Route path="/" element={
+                <>
+                  <button onClick={logout}>Log Out</button>
+                  {profile && (
+                    <div>
+                      <h1>{profile.display_name}</h1>
+                      <p>{profile.followers.total} Followers</p>
+                      {profile.images.length && profile.images[0].url && (
+                        <img src={profile.images[0].url} alt="Avatar"/>
+                      )}
+                    </div>
+                  )}
+                </>}>
+              </Route>
+            </Routes>
+          </Router>
         )}
       </header>
     </div>
