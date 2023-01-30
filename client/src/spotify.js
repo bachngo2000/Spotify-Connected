@@ -1,3 +1,4 @@
+import axios from 'axios';
 // Map for localStorage keys
 // LOCALSTORAGE_KEYS map is an easy way for us to refer to the keys we're going to use for each key/value pair in local storage
 const LOCALSTORAGE_KEYS = {
@@ -22,6 +23,7 @@ const LOCALSTORAGE_VALUES = {
  * and now is greater than the expiration time of 3600 seconds (1 hour).
  * @returns {boolean} Whether or not the access token in localStorage has expired
  */
+// This utility function uses the timestamp stored in local storage to check if the amount of time elapsed since the timestamp is greater than the access token's expire time (3600 seconds). If it is, then we can assume the token has expired and we need to fetch a new one.
 const hasTokenExpired = () => {
     const { accessToken, timestamp, expireTime } = LOCALSTORAGE_VALUES;
     if (!accessToken || !timestamp) {
@@ -29,6 +31,40 @@ const hasTokenExpired = () => {
     }
     const millisecondsElapsed = Date.now() - Number(timestamp);
     return (millisecondsElapsed / 1000) > Number(expireTime);
+};
+
+// Step 11: Refreshing the access token
+/**
+ * Use the refresh token in localStorage to hit the /refresh_token endpoint
+ * in our Node app, then update values in localStorage with data from response.
+ * @returns {void}
+ */
+// AN asynchronous function (due to the API call we make to our /refresh_token endpoint in our Express app)
+const refreshToken = async () => {
+    try {
+      // First, we check to make sure we have a refresh token to use.  If not, we're out of luck and the only thing we can do is log the user out, since our app will be unusable
+      // Logout if there's no refresh token stored or we've managed to get into a reload infinite loop
+      if (!LOCALSTORAGE_VALUES.refreshToken ||
+        LOCALSTORAGE_VALUES.refreshToken === 'undefined' ||
+        (Date.now() - Number(LOCALSTORAGE_VALUES.timestamp) / 1000) < 1000
+      ) {
+        console.error('No refresh token available');
+        logout();
+      }
+      // Otherwise, we await the JSON response from refreshing the token, and then use the response data to update our local storage values.
+      // Use `/refresh_token` endpoint from our Node app
+      const { data } = await axios.get(`/refresh_token?refresh_token=${LOCALSTORAGE_VALUES.refreshToken}`);
+  
+      // Update localStorage values
+      window.localStorage.setItem(LOCALSTORAGE_KEYS.accessToken, data.access_token);
+      window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
+      
+      // Once we've retrieved a new token and updated our values in local storage, we need to reload the page so our updates can be reflected
+      window.location.reload();
+  
+    } catch (e) {
+      console.error(e);
+    }
 };
 
 // Step 7: move our query param logic from App.js to the Spotify.js file to keep Spotify-related logic in one place.
