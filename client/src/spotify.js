@@ -110,7 +110,7 @@ const getAccessToken = () => {
     };
 
     const hasError = urlParams.get('error');
-    
+
     // If there's an error in the query param of our URL OR the token in localStorage has expired, refresh the token
     if (hasError || hasTokenExpired() || LOCALSTORAGE_VALUES.accessToken === 'undefined') {
         refreshToken();
@@ -139,3 +139,24 @@ const getAccessToken = () => {
 
 export const accessToken = getAccessToken();
 
+// add some global axios defaults
+/**
+ * Axios global request headers
+ * https://github.com/axios/axios#global-axios-defaults
+ */
+
+// we set the base URL and the HTTP request headers for every HTTP request we make with axios. These configs are super convenient for keeping our code clean — we won't have to worry about including them each time we make a request with axios. 
+// Note that the accessToken in the Authorization header is the OAuth access token we retrieved from local storage.
+axios.defaults.baseURL = 'https://api.spotify.com/v1';
+axios.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+axios.defaults.headers['Content-Type'] = 'application/json';
+
+// Step 12: we add a function that makes a GET request to the https://api.spotify.com/v1/me endpoint to get the current logged-in user's profile
+/**
+ * Get Current User's Profile
+ * https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-current-users-profile
+ * @returns {Promise}
+ */
+
+// Since we set the base URL globally, the URL we use for our axios request only needs to be /me, not https://api.spotify.com/v1/me.
+export const getCurrentUserProfile = () => axios.get('/me');
