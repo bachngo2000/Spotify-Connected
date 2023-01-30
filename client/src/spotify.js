@@ -16,6 +16,21 @@ const LOCALSTORAGE_VALUES = {
     timestamp: window.localStorage.getItem(LOCALSTORAGE_KEYS.timestamp),
 };
 
+//Step 10: Checking if the access token has expired
+/**
+ * Checks if the amount of time that has elapsed between the timestamp in localStorage
+ * and now is greater than the expiration time of 3600 seconds (1 hour).
+ * @returns {boolean} Whether or not the access token in localStorage has expired
+ */
+const hasTokenExpired = () => {
+    const { accessToken, timestamp, expireTime } = LOCALSTORAGE_VALUES;
+    if (!accessToken || !timestamp) {
+      return false;
+    }
+    const millisecondsElapsed = Date.now() - Number(timestamp);
+    return (millisecondsElapsed / 1000) > Number(expireTime);
+};
+
 // Step 7: move our query param logic from App.js to the Spotify.js file to keep Spotify-related logic in one place.
 // Then, we can refactor our App.js file to import the access token from spotify.js and use the useState hook to keep track of the token. We'll then use the token state variable to conditionally render the login button, or a logged-in state, with a ternary.
 // Once we're done modifying our App.js file,  Now, although we're able to let users log in to Spotify and grab the access token from the URL, we still have a problem. Our React app is only aware of the Spotify access token when it's stored as a query parameter on the URL — meaning if we visit http://localhost:3000 again, we'll see the login button, not the logged-in state
@@ -64,7 +79,7 @@ const getAccessToken = () => {
         return queryParams[LOCALSTORAGE_KEYS.accessToken];
     }
 
-    // We should never get here!
+    // We should never get here! Step 9 ends here!
     return false;
 };
 
