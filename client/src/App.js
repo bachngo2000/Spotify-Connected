@@ -40,7 +40,7 @@ function App() {
   }, []);
 
   // Now, we're gonna add a logout button! We'll import the logout function from our spotify.js file and then add a <button> with a click handler that calls the logout function.
-  // When we click the logout button, the page will reload and the Log in to Spotify link will be rendered, since there's no longer an access token in local storage
+  // When we click the logout button, the page will reload and the 'Log in to Spotify' link will be rendered, since there's no longer an access token in local storage (it's been cleared)
   return (
     <div className="App">
       <header className="App-header">
