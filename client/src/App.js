@@ -12,7 +12,7 @@ import { GlobalStyle } from './styles';
 
 import styled from 'styled-components/macro';
 
-import { Login, Profile } from './pages';
+import { Login, Profile, TopArtists } from './pages';
 
 // const StyledLoginButton = styled.a`
 //   background-color: var(--green);;
@@ -161,7 +161,7 @@ function App() {
           <Router>
             <ScrollToTop />
             <Routes>
-              <Route path="/top-artists" element={<h1>Top Artists</h1>}>
+              <Route path="/top-artists" element={<TopArtists />}>
               </Route>
               <Route path="/top-tracks" element={<h1>Top Tracks</h1>}>
               </Route>
