@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { accessToken, logout, getCurrentUserProfile } from './spotify';
-import { catchErrors } from './util';
+import { catchErrors } from './utils';
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,7 +12,7 @@ import { GlobalStyle } from './styles';
 
 import styled from 'styled-components/macro';
 
-import { Login } from './pages';
+import { Login, Profile } from './pages';
 
 // const StyledLoginButton = styled.a`
 //   background-color: var(--green);;
@@ -22,6 +22,21 @@ import { Login } from './pages';
 //   border-radius: 30px;
 //   display: inline-block;
 // `;
+const StyledLogoutButton = styled.button`
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(0,0,0,.7);
+  color: var(--white);
+  font-size: var(--fz-sm);
+  font-weight: 700;
+  border-radius: var(--border-radius-pill);
+  z-index: 10;
+  @media (min-width: 768px) {
+    right: var(--spacing-lg);
+  }
+`;
 
 // Scroll to top of page when changing routes
 // https://reactrouter.com/web/guides/scroll-restoration/scroll-to-top
@@ -140,6 +155,9 @@ function App() {
           //     </div>
           //   )}
           // </>
+          <>
+          <StyledLogoutButton onClick={logout}>Log Out</StyledLogoutButton>
+
           <Router>
             <ScrollToTop />
             <Routes>
@@ -152,21 +170,24 @@ function App() {
               <Route path="/playlists" element={<h1>Playlists</h1>}>
               </Route>
               <Route path="/" element={
-                <>
-                  <button onClick={logout}>Log Out</button>
-                  {profile && (
-                    <div>
-                      <h1>{profile.display_name}</h1>
-                      <p>{profile.followers.total} Followers</p>
-                      {profile.images.length && profile.images[0].url && (
-                        <img src={profile.images[0].url} alt="Avatar"/>
-                      )}
-                    </div>
-                  )}
-                </>}>
+                // <>
+                //   <button onClick={logout}>Log Out</button>
+                //   {profile && (
+                //     <div>
+                //       <h1>{profile.display_name}</h1>
+                //       <p>{profile.followers.total} Followers</p>
+                //       {profile.images.length && profile.images[0].url && (
+                //         <img src={profile.images[0].url} alt="Avatar"/>
+                //       )}
+                //     </div>
+                //   )}
+                // </>
+                <Profile />
+              }>
               </Route>
             </Routes>
           </Router>
+          </>
         )}
       </header>
     </div>
