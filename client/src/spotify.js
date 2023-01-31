@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Playlist } from './pages';
 // Map for localStorage keys
 // LOCALSTORAGE_KEYS map is an easy way for us to refer to the keys we're going to use for each key/value pair in local storage
 const LOCALSTORAGE_KEYS = {
@@ -189,3 +190,13 @@ export const getTopArtists = (time_range = 'long_term') => {
 export const getTopTracks = (time_range = 'short_term') => {
   return axios.get(`/me/top/tracks?time_range=${time_range}`);
 };
+
+/**
+ * Get a Playlist
+ * https://developer.spotify.com/documentation/web-api/reference/#/operations/get-playlist
+ * @param {string} playlist_id - The Spotify ID for the playlist
+ * @returns {Promise}
+ */
+export const getPlaylistById = playlist_id => {
+  return axios.get(`/playlists/${playlist_id}`);
+}
