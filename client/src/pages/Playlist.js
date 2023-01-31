@@ -42,7 +42,7 @@ const Playlist = () => {
     };
 
     setTracks(tracks => ([
-      ...tracks ? tracks : [],
+      //...tracks ? tracks : [],
       ...tracksData.items
     ]));
     catchErrors(fetchMoreData());
