@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { catchErrors } from '../utils';
-import { getCurrentUserProfile, getCurrentUserPlaylists } from '../spotify';
+import { getCurrentUserProfile, getCurrentUserPlaylists, getTopArtists, getTopTracks } from '../spotify';
 import { StyledHeader } from '../styles';
+import { SectionWrapper, ArtistsGrid } from '../components';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [playlists, setPlaylists] = useState(null);
-
+  const [topArtists, setTopArtists] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,6 +16,9 @@ const Profile = () => {
 
         const userPlaylists = await getCurrentUserPlaylists();
         setPlaylists(userPlaylists.data);
+
+        const userTopArtist = await getTopArtists();
+        setTopArtists(userTopArtist.data);
     };
 
     catchErrors(fetchData());
@@ -23,7 +27,6 @@ const Profile = () => {
   return (
     <>
       {profile && (
-        <>
           <StyledHeader type="user">
             <div className="header__inner">
               {profile.images.length && profile.images[0].url && (
@@ -43,7 +46,14 @@ const Profile = () => {
               </div>
             </div>
           </StyledHeader>
-        </>
+      )}
+
+      {topArtists && (
+        <main>
+            <SectionWrapper title="Top artists this month" seeAllLink="/top-artists">
+            <ArtistsGrid artists={topArtists.items.slice(0, 10)} />
+            </SectionWrapper>
+        </main>
       )}
     </>
   )
