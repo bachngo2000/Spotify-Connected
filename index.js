@@ -12,7 +12,8 @@ const querystring = require('querystring');
 const app = express();
 //require the axios library to help create a POST request in our /callback route handler to send the authorization code back to the Spotify server to exchange for the access token
 const axios = require('axios');
-const port = 8888;
+// const port = 8888;
+const path = require('path');
 
 // The last thing we need to do to prepare our environment is set up our redirect URI. The redirect URI is a route of our app that we want the Spotify Accounts Service to redirect the user to once they've authorized our app (i.e. successfully logged into Spotify).
 //In our case, the redirect URI will be the /callback route (http://localhost:8888/callback). We'll set up this route handler later.
@@ -20,6 +21,11 @@ const port = 8888;
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
+const FRONTEND_URI = process.env.FRONTEND_URI;
+const PORT = process.env.PORT || 8888;
+
+// Priority serve any static files.
+app.use(express.static(path.resolve(__dirname, './client/build')));
 
 // Route handler when a user first clicks on http://localhost:8888
 app.get('/', (req, res) => {
@@ -186,7 +192,7 @@ app.get('/callback', (req, res) => {
           });
           
           // redirect to react app at http://localhost:3000
-          res.redirect(`http://localhost:3000/?${queryParams}`);
+          res.redirect(`${FRONTEND_URI}?${queryParams}`);
           
         } 
         // if the respose is not 200, we will redirect with a error query param instead
@@ -227,7 +233,11 @@ app.get('/refresh_token', (req, res) => {
       });
 });
 
+// All remaining requests return the React app, so it can handle routing.
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+});
 
-app.listen(port, () => {''
-    console.log(`Express app listening at http://localhost:${port}`);
+app.listen(PORT, () => {''
+    console.log(`Express app listening at http://localhost:${PORT}`);
 });
