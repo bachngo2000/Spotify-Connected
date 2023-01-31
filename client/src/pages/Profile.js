@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { catchErrors } from '../utils';
 import { getCurrentUserProfile, getCurrentUserPlaylists, getTopArtists, getTopTracks } from '../spotify';
 import { StyledHeader } from '../styles';
-import { SectionWrapper, ArtistsGrid, TrackList, PlaylistsGrid } from '../components';
+import { SectionWrapper, ArtistsGrid, TrackList, PlaylistsGrid, Loader } from '../components';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -31,6 +31,7 @@ const Profile = () => {
 
   return (
     <>
+    <Loader />
       {profile && (
           <StyledHeader type="user">
             <div className="header__inner">
