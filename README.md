@@ -1,5 +1,13 @@
 # Spotify Connected App
 
+## Introduction
+
+In this project, I built and deployed a full-stack web application that integrates with the Spotify Web API.
+
+My-Spotify is a web app to visualize personalized Spotify data with the help of Node.js, Express, React, JavaScript, CSS, HTML, Styled Components, and the Spotify API
+
+You can check out a demo of the final version of the app I built at: https://my-spotify.herokuapp.com/.
+
 ## Local Installation & Set Up
 
 1. Register a Spotify App in your [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/) and add `http://localhost:8888/callback` as a Redirect URI in the app settings
